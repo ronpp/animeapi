@@ -11,7 +11,7 @@ public class Anime {
     @GeneratedValue(strategy = GenerationType.AUTO)
     public UUID id;
     public String name;
-    public String descripcion;
+    public String description;
     public String type;
     public int year_release;
     public String image;
