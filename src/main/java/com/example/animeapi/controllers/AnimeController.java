@@ -1,5 +1,6 @@
 package com.example.animeapi.controllers;
 
+import com.example.animeapi.domains.dto.ErrorMessage;
 import com.example.animeapi.domains.dto.ListResult;
 import com.example.animeapi.domains.models.Anime;
 import com.example.animeapi.repositories.AnimeRepository;
@@ -37,14 +38,19 @@ public class AnimeController {
         if(anime != null){
             return ResponseEntity.ok().body(anime);
         }
-        String errorMessage = String.format("{ \"message\": \"No s 'ha trobat l' anime amd id %s \"  }", id.toString());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+        String errorMessage = String.format("No s 'ha trobat l' anime amd id %s", id.toString());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorMessage.message(errorMessage));
     }
 
 
     @PostMapping(path = "/")
     public ResponseEntity<?>addAnime(@RequestBody Anime anime){
-        return ResponseEntity.ok().body(animeRepository.save(anime));
+
+        Anime name = animeRepository.findByname(anime.name);
+        if(name == null)
+            return ResponseEntity.ok().body(animeRepository.save(anime));
+        String errorMessage = String.format("Ja existeix un anime amb el nom '%s' ", anime.name);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorMessage.message(errorMessage));
     }
 
 }
