@@ -1,9 +1,8 @@
 package com.example.animeapi.controllers;
 
 import com.example.animeapi.domains.dto.DisplayMessage;
-import com.example.animeapi.domains.dto.GetUser;
+import com.example.animeapi.domains.dto.UserResult;
 import com.example.animeapi.domains.dto.ListResult;
-import com.example.animeapi.domains.models.Anime;
 import com.example.animeapi.domains.models.User;
 import com.example.animeapi.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +42,7 @@ public class UserController {
             user.password = passwordEncoder.encode(newUser.password);
             user.enabled = true;
             userRepository.save(user);
-            GetUser userResponse = GetUser.user(user.userid.toString(), user.username);
+            UserResult userResponse = UserResult.user(user.userid.toString(), user.username);
             return ResponseEntity.ok().body(userResponse);
         }
         String message = String.format("Ja existeix un usuari amb el nom '%s'", newUser.username);
@@ -55,10 +54,10 @@ public class UserController {
         User user = userRepository.findById(id).orElse(null);
         if(user != null){
             userRepository.deleteById(id);
-            String message = String.format("S'ha eliminat l'usuari amd id '%s'" ,id.toString());
+            String message = String.format("S'ha eliminat l'usuari amd id '%s'" ,id);
             return ResponseEntity.ok().body(DisplayMessage.message(message));
         }
-        String errorMessage = String.format("No s'ha trobat l'usuari amd id %s", id.toString());
+        String errorMessage = String.format("No s'ha trobat l'usuari amd id %s", id);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(DisplayMessage.message(errorMessage));
     }
 

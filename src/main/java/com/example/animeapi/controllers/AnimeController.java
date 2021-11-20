@@ -35,7 +35,7 @@ public class AnimeController {
         if(anime != null){
             return ResponseEntity.ok().body(anime);
         }
-        String errorMessage = String.format("No s 'ha trobat l' anime amd id %s", id.toString());
+        String errorMessage = String.format("No s 'ha trobat l' anime amd id %s", id);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(DisplayMessage.message(errorMessage));
     }
 
@@ -55,10 +55,10 @@ public class AnimeController {
         Anime anime = animeRepository.findById(id).orElse(null);
         if(anime != null){
             animeRepository.deleteById(id);
-            String message = String.format("S'ha eliminat l'anime amd id '%s'" ,id.toString());
+            String message = String.format("S'ha eliminat l'anime amd id '%s'" ,id);
             return ResponseEntity.ok().body(DisplayMessage.message(message));
         }
-        String errorMessage = String.format("No s 'ha trobat l' anime amd id %s", id.toString());
+        String errorMessage = String.format("No s 'ha trobat l' anime amd id %s", id);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(DisplayMessage.message(errorMessage));
 
     }
