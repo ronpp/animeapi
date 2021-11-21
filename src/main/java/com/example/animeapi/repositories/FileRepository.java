@@ -10,6 +10,6 @@ import java.util.UUID;
 public interface FileRepository extends JpaRepository<File, UUID> {
 
     @Query("select fileid, contenttype FROM File")
-    List<String>getFiles(); //TODO: Ask to Professor
+    List<String> getFiles(); //TODO: Ask to Professor
 
 }

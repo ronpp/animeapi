@@ -1,15 +1,18 @@
 package com.example.animeapi.domains.dto;
 
+import com.example.animeapi.domains.models.User;
+
 public class UserResult {
     public String userid;
     public String username;
 
-    public UserResult(String userid, String username) {
-        this.userid = userid;
-        this.username = username;
+    public UserResult(User user) {
+        this.userid = user.userid.toString();
+        this.username = user.username;
     }
+
     //TODO: Ask to Professor
-    public static UserResult user(String userid, String username){
-        return new UserResult( userid, username);
+    public static UserResult user(User user) {
+        return new UserResult(user);
     }
 }

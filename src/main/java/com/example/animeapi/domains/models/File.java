@@ -13,6 +13,6 @@ public class File {
     public UUID fileid;
     public String contenttype;
     @Lob
-    @Type(type="org.hibernate.type.BinaryType")
+    @Type(type = "org.hibernate.type.BinaryType")
     public byte[] data;
 }

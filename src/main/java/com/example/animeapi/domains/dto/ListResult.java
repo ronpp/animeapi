@@ -9,7 +9,7 @@ public class ListResult {
         this.result = result;
     }
 
-    public static ListResult list(List<?> result){
+    public static ListResult list(List<?> result) {
         return new ListResult(result);
     }
 }

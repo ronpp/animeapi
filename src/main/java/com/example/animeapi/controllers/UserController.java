@@ -1,69 +1,75 @@
 package com.example.animeapi.controllers;
 
 import com.example.animeapi.domains.dto.DisplayMessage;
-import com.example.animeapi.domains.dto.UserResult;
 import com.example.animeapi.domains.dto.ListResult;
+import com.example.animeapi.domains.dto.UserResult;
 import com.example.animeapi.domains.models.User;
 import com.example.animeapi.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
     @Autowired
-     private UserRepository userRepository;
+    private UserRepository userRepository;
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
     @GetMapping(path = "/")
-    public ResponseEntity<?> getAllUser(){
-        List<User> userList = userRepository.findAll();
-        if(userList.size() != 0 ){
+    public ResponseEntity<?> getAllUser() {
+        List<UserResult> userList = userRepository.findAll()
+                .stream()
+                .map(UserResult::user) // Same as (user -> UserResult.user(user))
+                .collect(Collectors.toList());
+
+        if (userList.size() != 0) {
             return ResponseEntity.ok().body(ListResult.list(userList));
         }
         return ResponseEntity.ok().body(ListResult.list(new ArrayList<>()));
     }
 
     @PostMapping(path = "/")
-    public ResponseEntity<?> addUser(@RequestBody User newUser){
+    public ResponseEntity<?> addUser(@RequestBody User newUser) {
 
-        if(userRepository.findByUsername(newUser.username) == null){
+        if (userRepository.findByUsername(newUser.username) == null) {
             User user = new User();
             user.username = newUser.username;
             user.password = passwordEncoder.encode(newUser.password);
             user.enabled = true;
             userRepository.save(user);
-            UserResult userResponse = UserResult.user(user.userid.toString(), user.username);
+            UserResult userResponse = UserResult.user(user);
             return ResponseEntity.ok().body(userResponse);
         }
-        String message = String.format("Ja existeix un usuari amb el nom '%s'", newUser.username);
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(DisplayMessage.message(message));
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(DisplayMessage.message(String.format("Ja existeix un usuari amb el nom '%s'", newUser.username)));
     }
 
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable UUID id){
+    public ResponseEntity<?> deleteUser(@PathVariable UUID id) {
         User user = userRepository.findById(id).orElse(null);
-        if(user != null){
+        if (user != null) {
             userRepository.deleteById(id);
-            String message = String.format("S'ha eliminat l'usuari amd id '%s'" ,id);
-            return ResponseEntity.ok().body(DisplayMessage.message(message));
+            return ResponseEntity.ok()
+                    .body(DisplayMessage.message( String.format("S'ha eliminat l'usuari amd id '%s'", id)));
         }
-        String errorMessage = String.format("No s'ha trobat l'usuari amd id %s", id);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(DisplayMessage.message(errorMessage));
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(DisplayMessage.message(String.format("No s'ha trobat l'usuari amd id %s", id)));
     }
 
     @DeleteMapping(path = "/")
-    public ResponseEntity<?> deleteAllUser(){
+    public ResponseEntity<?> deleteAllUser() {
         userRepository.deleteAll();
         return ResponseEntity.ok().body("");
     }
- }
+}
