@@ -25,20 +25,17 @@ public class UserController {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-    @GetMapping(path = "/")
+    @GetMapping("/")
     public ResponseEntity<?> getAllUser() {
         List<UserResult> userList = userRepository.findAll()
                 .stream()
                 .map(UserResult::user) // Same as (user -> UserResult.user(user))
                 .collect(Collectors.toList());
 
-        if (userList.size() != 0) {
-            return ResponseEntity.ok().body(ListResult.list(userList));
-        }
-        return ResponseEntity.ok().body(ListResult.list(new ArrayList<>()));
+        return ResponseEntity.ok().body(ListResult.list(userList));
     }
 
-    @PostMapping(path = "/")
+    @PostMapping("/")
     public ResponseEntity<?> addUser(@RequestBody User newUser) {
 
         if (userRepository.findByUsername(newUser.username) == null) {
@@ -54,7 +51,7 @@ public class UserController {
                 .body(DisplayMessage.message(String.format("Ja existeix un usuari amb el nom '%s'", newUser.username)));
     }
 
-    @DeleteMapping(path = "/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable UUID id) {
         User user = userRepository.findById(id).orElse(null);
         if (user != null) {
@@ -67,9 +64,9 @@ public class UserController {
                 .body(DisplayMessage.message(String.format("No s'ha trobat l'usuari amd id %s", id)));
     }
 
-    @DeleteMapping(path = "/")
+    @DeleteMapping("/")
     public ResponseEntity<?> deleteAllUser() {
         userRepository.deleteAll();
-        return ResponseEntity.ok().body("");
+        return ResponseEntity.ok().build();
     }
 }

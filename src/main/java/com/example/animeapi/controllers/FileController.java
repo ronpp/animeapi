@@ -12,10 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/files")
@@ -24,17 +22,14 @@ public class FileController {
     @Autowired
     private FileRepository fileRepository;
 
-    @GetMapping(path = "/")
+    @GetMapping("/")
     public ResponseEntity<?> getAllFile() {
         List<FileResult> fileList = fileRepository.getFiles();
-//                .stream()
-//                .map(FileResult::file)  // Same as (file -> FileResult.file(file))
-//                .collect(Collectors.toList());
             return ResponseEntity.ok().body(ListResult.list(fileList));
 
     }
 
-    @GetMapping(path = "/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getFile(@PathVariable UUID id) {
         File file = fileRepository.findById(id).orElse(null);
         if (file != null)
@@ -46,22 +41,21 @@ public class FileController {
                 .body(DisplayMessage.message(String.format("No s'ha trobat l'arxiu amd id '%s'", id)));
     }
 
-    @PostMapping(path = "/")
+    @PostMapping("/")
     public ResponseEntity<?> addFile(@RequestParam("file") MultipartFile uploadedFile) {
         try {
             File file = new File();
             file.contenttype = uploadedFile.getContentType();
             file.data = uploadedFile.getBytes();
             fileRepository.save(file);
-            FileResult fileResult = FileResult.file(file);
-            return ResponseEntity.ok().body(fileResult);
+            return ResponseEntity.ok().body(FileResult.file(file));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
     }
 
-    @DeleteMapping(path = "/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable UUID id) {
         File file = fileRepository.findById(id).orElse(null);
         if (file != null) {
@@ -73,9 +67,9 @@ public class FileController {
                 .body(DisplayMessage.message(String.format("No s'ha trobat l'arxiu amd id %s", id)));
     }
 
-    @DeleteMapping(path = "/")
+    @DeleteMapping("/")
     public ResponseEntity<?> deleteAllUser() {
         fileRepository.deleteAll();
-        return ResponseEntity.ok().body("");
+        return ResponseEntity.ok().build();
     }
 }

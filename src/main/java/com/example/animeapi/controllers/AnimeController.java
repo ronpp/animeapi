@@ -19,26 +19,25 @@ public class AnimeController {
     @Autowired
     private AnimeRepository animeRepository;
 
-    @GetMapping(path = "/")
+    @GetMapping("/")
     public ResponseEntity<?> getAllAnime() {
         List<Anime> animeList = animeRepository.findAll();
-        if (animeList.size() != 0) {
-            return ResponseEntity.ok().body(ListResult.list(animeList));
-        }
-        return ResponseEntity.ok().body(ListResult.list(new ArrayList<>()));
+        return ResponseEntity.ok().body(ListResult.list(animeList));
+
     }
 
-    @GetMapping(path = "/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getAnime(@PathVariable UUID id) {
         Anime anime = animeRepository.findById(id).orElse(null);
         if (anime != null) {
             return ResponseEntity.ok().body(anime);
         }
-        String errorMessage = String.format("No s 'ha trobat l' anime amd id %s", id);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(DisplayMessage.message(errorMessage));
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(DisplayMessage.message(String.format("No s 'ha trobat l' anime amd id %s", id)));
     }
 
-    @PostMapping(path = "/")
+    @PostMapping("/")
     public ResponseEntity<?> addAnime(@RequestBody Anime anime) {
         if (animeRepository.findByname(anime.name) == null)
             return ResponseEntity.ok().body(animeRepository.save(anime));
@@ -47,7 +46,7 @@ public class AnimeController {
                 .body(DisplayMessage.message(String.format("Ja existeix un anime amb el nom '%s' ", anime.name)));
     }
 
-    @DeleteMapping(path = "/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteAnime(@PathVariable UUID id) {
         Anime anime = animeRepository.findById(id).orElse(null);
         if (anime != null) {
