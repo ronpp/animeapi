@@ -26,15 +26,12 @@ public class FileController {
 
     @GetMapping(path = "/")
     public ResponseEntity<?> getAllFile() {
-        List<FileResult> fileList = fileRepository.findAll()
-                .stream()
-                .map(FileResult::file)  // Same as (file -> FileResult.file(file))
-                .collect(Collectors.toList());
-
-        if (fileList.size() != 0) {
+        List<FileResult> fileList = fileRepository.getFiles();
+//                .stream()
+//                .map(FileResult::file)  // Same as (file -> FileResult.file(file))
+//                .collect(Collectors.toList());
             return ResponseEntity.ok().body(ListResult.list(fileList));
-        }
-        return ResponseEntity.ok().body(ListResult.list(new ArrayList<>()));
+
     }
 
     @GetMapping(path = "/{id}")
