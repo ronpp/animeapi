@@ -23,13 +23,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-    @Override   //TODO: Ask to Professor
+    @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().csrf().disable()
                 .authorizeRequests()
-                .mvcMatchers("/files/", "/users/","/animes/").permitAll()
+                .mvcMatchers(HttpMethod.GET,"/files/", "/users/","/animes/").permitAll()
                 .mvcMatchers(HttpMethod.POST, "/users/").permitAll()
                 .mvcMatchers(HttpMethod.POST, "/animes/", "/files/").authenticated()
                 .mvcMatchers(HttpMethod.DELETE, "/anime/", "/user/", "/file/").authenticated()

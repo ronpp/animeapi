@@ -11,7 +11,7 @@ public class UserResult {
         this.username = user.username;
     }
 
-    //TODO: Ask to Professor
+
     public static UserResult user(User user) {
         return new UserResult(user);
     }
