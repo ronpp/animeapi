@@ -3,13 +3,13 @@ package com.example.animeapi.controllers;
 import com.example.animeapi.domains.dto.DisplayMessage;
 import com.example.animeapi.domains.dto.ListResult;
 import com.example.animeapi.domains.models.Anime;
+import com.example.animeapi.domains.models.projections.ProjectionAnime;
 import com.example.animeapi.repositories.AnimeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,14 +21,14 @@ public class AnimeController {
 
     @GetMapping("/")
     public ResponseEntity<?> getAllAnime() {
-        List<Anime> animeList = animeRepository.findAll();
+        List<ProjectionAnime> animeList = animeRepository.findBy();
         return ResponseEntity.ok().body(ListResult.list(animeList));
 
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getAnime(@PathVariable UUID id) {
-        Anime anime = animeRepository.findById(id).orElse(null);
+        ProjectionAnime anime = animeRepository.findByAnimeid(id);
         if (anime != null) {
             return ResponseEntity.ok().body(anime);
         }

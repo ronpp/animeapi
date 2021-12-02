@@ -4,6 +4,7 @@ import com.example.animeapi.domains.dto.DisplayMessage;
 import com.example.animeapi.domains.dto.FileResult;
 import com.example.animeapi.domains.dto.ListResult;
 import com.example.animeapi.domains.models.File;
+import com.example.animeapi.domains.models.projections.ProjectionFile;
 import com.example.animeapi.repositories.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,7 +25,7 @@ public class FileController {
 
     @GetMapping("/")
     public ResponseEntity<?> getAllFile() {
-        List<FileResult> fileList = fileRepository.getFiles();
+        List<ProjectionFile> fileList = fileRepository.findBy();
             return ResponseEntity.ok().body(ListResult.list(fileList));
 
     }
