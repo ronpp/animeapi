@@ -10,5 +10,5 @@ import java.util.UUID;
 public interface AuthorRepository extends JpaRepository<Author, UUID> {
 
     List<ProjectionAuthor>findBy();
-    ProjectionAuthor findByAuthorid(UUID id);
+    <T> T findByAuthorid(UUID id, Class<T> type);
 }

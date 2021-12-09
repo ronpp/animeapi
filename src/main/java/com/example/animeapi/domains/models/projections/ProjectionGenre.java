@@ -13,6 +13,6 @@ public interface ProjectionGenre {
     String getLabel();
 
     @JsonIgnoreProperties({"genres", "description", "year_release"})
-    Set<ProjectionAnime> getAnimes();
+    Set<ProjectionAnimeShort> getAnimes();
 
 }

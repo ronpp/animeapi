@@ -4,6 +4,7 @@ package com.example.animeapi.controllers;
 import com.example.animeapi.domains.dto.DisplayMessage;
 import com.example.animeapi.domains.dto.ListResult;
 import com.example.animeapi.domains.models.projections.ProjectionAuthor;
+import com.example.animeapi.domains.models.projections.ProjectionAuthorDetails;
 import com.example.animeapi.repositories.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,7 @@ public class AuthorController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getAuthor(@PathVariable UUID id) {
-        ProjectionAuthor author = AuthorRepository.findByAuthorid(id);
+        ProjectionAuthorDetails author = AuthorRepository.findByAuthorid(id, ProjectionAuthorDetails.class);
         if (author != null) {
             return ResponseEntity.ok().body(author);
         }
