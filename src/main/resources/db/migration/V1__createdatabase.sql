@@ -25,6 +25,7 @@ CREATE TABLE anime_genre (
     genreid uuid REFERENCES genre(genreid) ON DELETE CASCADE,
     PRIMARY KEY (animeid, genreid));
 
+
 CREATE TABLE usser (
   userid uuid NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   username varchar(24) NOT NULL UNIQUE,
@@ -36,3 +37,8 @@ CREATE TABLE file (
     fileid UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
     contenttype TEXT,
     data bytea);
+
+ CREATE TABLE favorite(
+    userid uuid REFERENCES usser(userid) ON DELETE CASCADE,
+    animeid uuid REFERENCES anime(animeid) ON DELETE CASCADE,
+    PRIMARY KEY (userid, animeid));
