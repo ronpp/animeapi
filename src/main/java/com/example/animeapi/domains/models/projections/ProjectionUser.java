@@ -7,6 +7,4 @@ public interface ProjectionUser {
     UUID getUserid();
     String getUsername();
 
-   // Set<> getFavorites;
-
 }

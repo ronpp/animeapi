@@ -4,6 +4,8 @@ import com.example.animeapi.domains.dto.DisplayMessage;
 import com.example.animeapi.domains.dto.ListResult;
 import com.example.animeapi.domains.dto.UserResult;
 import com.example.animeapi.domains.models.User;
+import com.example.animeapi.domains.models.projections.ProjectionUser;
+import com.example.animeapi.domains.models.projections.ProjectionUserDetail;
 import com.example.animeapi.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,12 +28,13 @@ public class UserController {
 
     @GetMapping("/")
     public ResponseEntity<?> getAllUser() {
-        List<UserResult> userList = userRepository.findAll()
-                .stream()
-                .map(UserResult::user) // Same as (user -> UserResult.user(user))
-                .collect(Collectors.toList());
-
+        List<ProjectionUser> userList = userRepository.findBy();
         return ResponseEntity.ok().body(ListResult.list(userList));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getUser(@PathVariable UUID id) {
+        return ResponseEntity.ok().body(ListResult.list(userRepository.findByUserid(id, ProjectionUserDetail.class)));
     }
 
     @PostMapping("/")
