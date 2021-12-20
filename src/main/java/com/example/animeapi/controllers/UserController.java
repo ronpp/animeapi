@@ -3,19 +3,22 @@ package com.example.animeapi.controllers;
 import com.example.animeapi.domains.dto.DisplayMessage;
 import com.example.animeapi.domains.dto.ListResult;
 import com.example.animeapi.domains.dto.UserResult;
+import com.example.animeapi.domains.models.Favorite;
 import com.example.animeapi.domains.models.User;
 import com.example.animeapi.domains.models.projections.ProjectionUser;
 import com.example.animeapi.domains.models.projections.ProjectionUserDetail;
+import com.example.animeapi.repositories.FavoriteRepository;
 import com.example.animeapi.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
@@ -23,6 +26,8 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private FavoriteRepository favoriteRepository;
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
@@ -51,6 +56,16 @@ public class UserController {
         }
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(DisplayMessage.message(String.format("Ja existeix un usuari amb el nom '%s'", newUser.username)));
+    }
+
+    @PostMapping("/{id}/favorite")
+    public ResponseEntity<?> addFavorite(@RequestBody Favorite favorite, Authentication authentication) {
+        if (userRepository.findByUsername(authentication.getName()).userid.equals(favorite.userid)){
+            favoriteRepository.save(favorite);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(DisplayMessage.message("You don't have the correct privilege to do this action"));
     }
 
     @DeleteMapping("/{id}")
