@@ -5,8 +5,10 @@ import com.example.animeapi.domains.dto.ListResult;
 import com.example.animeapi.domains.dto.UserResult;
 import com.example.animeapi.domains.models.Favorite;
 import com.example.animeapi.domains.models.User;
+import com.example.animeapi.domains.models.projections.ProjectionFavorite;
 import com.example.animeapi.domains.models.projections.ProjectionUser;
 import com.example.animeapi.domains.models.projections.ProjectionUserDetail;
+import com.example.animeapi.repositories.AnimeRepository;
 import com.example.animeapi.repositories.FavoriteRepository;
 import com.example.animeapi.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +19,17 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
+    @Autowired
+    private AnimeRepository animeRepository;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -41,6 +47,20 @@ public class UserController {
     public ResponseEntity<?> getUser(@PathVariable UUID id) {
         return ResponseEntity.ok().body(ListResult.list(userRepository.findByUserid(id, ProjectionUserDetail.class)));
     }
+
+
+    @GetMapping("/favorites")
+    public ResponseEntity<?>getFavorite(Authentication authentication){
+        UUID userID = userRepository.findByUsername(authentication.getName()).userid;
+        List<Favorite> favorites = favoriteRepository.findByUserid(userID);
+        List<ProjectionFavorite> favoritesAnime = favorites
+                                                    .stream()
+                                                    .map(fav -> {
+                                                       return animeRepository.findByAnimeid(fav.animeid, ProjectionFavorite.class);
+                                                    }).collect(Collectors.toList());
+        return ResponseEntity.ok().body(ListResult.list(favoritesAnime));
+    }
+
 
     @PostMapping("/")
     public ResponseEntity<?> addUser(@RequestBody User newUser) {
