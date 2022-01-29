@@ -40,4 +40,8 @@ INSERT INTO anime_genre VALUES
 
 
 INSERT INTO favorite VALUES
-   ((SELECT userid FROM usser WHERE username = 'user'),(SELECT animeid FROM anime WHERE name = 'Anime I'));
+   ((SELECT userid FROM usser WHERE username = 'user'),(SELECT animeid FROM anime WHERE name = 'Anime IV')),
+   ((SELECT userid FROM usser WHERE username = 'user'),(SELECT animeid FROM anime WHERE name = 'Anime I')),
+   ((SELECT userid FROM usser WHERE username = 'pepe'),(SELECT animeid FROM anime WHERE name = 'Anime IV')),
+   ((SELECT userid FROM usser WHERE username = 'pepe'),(SELECT animeid FROM anime WHERE name = 'Anime III')),
+   ((SELECT userid FROM usser WHERE username = 'pepe'),(SELECT animeid FROM anime WHERE name = 'Anime II'));

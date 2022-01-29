@@ -3,6 +3,7 @@ package com.example.animeapi.controllers;
 import com.example.animeapi.domains.dto.DisplayMessage;
 import com.example.animeapi.domains.dto.ListResult;
 import com.example.animeapi.domains.dto.UserResult;
+import com.example.animeapi.domains.models.Anime;
 import com.example.animeapi.domains.models.Favorite;
 import com.example.animeapi.domains.models.User;
 import com.example.animeapi.domains.models.projections.ProjectionFavorite;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -78,14 +80,16 @@ public class UserController {
                 .body(DisplayMessage.message(String.format("Ja existeix un usuari amb el nom '%s'", newUser.username)));
     }
 
-    @PostMapping("/{id}/favorite")
+    @PostMapping("/favorite")
     public ResponseEntity<?> addFavorite(@RequestBody Favorite favorite, Authentication authentication) {
-        if (userRepository.findByUsername(authentication.getName()).userid.equals(favorite.userid)){
+        UUID userID = userRepository.findByUsername(authentication.getName()).userid;
+        if (animeRepository.findByAnimeid(favorite.animeid, UUID.class) != null){
+            favorite.userid =  userID;
             favoriteRepository.save(favorite);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().body(favorite);
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(DisplayMessage.message("You don't have the correct privilege to do this action"));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(DisplayMessage.message(String.format("No s 'ha trobat l' anime amd id '%s'", favorite.animeid)));
     }
 
     @DeleteMapping("/{id}")
@@ -98,7 +102,7 @@ public class UserController {
         }
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(DisplayMessage.message(String.format("No s'ha trobat l'usuari amd id %s", id)));
+                .body(DisplayMessage.message(String.format("No s'ha trobat l'usuari amd id '%s'", id)));
     }
 
     @DeleteMapping("/")
@@ -106,4 +110,22 @@ public class UserController {
         userRepository.deleteAll();
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("/favorite/{id}")
+    public ResponseEntity<?> deleteFavorite(@PathVariable UUID id, Authentication authentication) {
+       User user = userRepository.findByUsername(authentication.getName());
+
+        if (user != null) {
+            Favorite favorite = new Favorite();
+            favorite.userid =  user.userid;
+            favorite.animeid = id;
+            favoriteRepository.delete(favorite);
+            return ResponseEntity.ok()
+                    .body(DisplayMessage.message(String.format("S'ha eliminat dels favorits l'anime amd id '%s'", id)));
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(DisplayMessage.message(String.format("No s 'ha trobat l'id '%s'", id)));
+    }
+
 }
