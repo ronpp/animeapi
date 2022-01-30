@@ -4,7 +4,9 @@ import com.example.animeapi.domains.dto.DisplayMessage;
 import com.example.animeapi.domains.dto.ListResult;
 import com.example.animeapi.domains.models.Anime;
 import com.example.animeapi.domains.models.projections.ProjectionAnime;
+import com.example.animeapi.domains.models.projections.ProjectionRecommended;
 import com.example.animeapi.repositories.AnimeRepository;
+import com.example.animeapi.services.RecommendedService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,12 +14,15 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/animes")
 public class AnimeController {
     @Autowired
     private AnimeRepository animeRepository;
+    @Autowired
+    private RecommendedService recommendedService;
 
     @GetMapping("/")
     public ResponseEntity<?> getAllAnime() {
@@ -57,5 +62,11 @@ public class AnimeController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(DisplayMessage.message(String.format("No s 'ha trobat l' anime amd id %s", id)));
     }
+
+    @GetMapping("/recommended")
+    public ResponseEntity<?> getRecommended(){
+        return ResponseEntity.ok().body(ListResult.list(recommendedService.getRecommended()));
+    }
+
 
 }
