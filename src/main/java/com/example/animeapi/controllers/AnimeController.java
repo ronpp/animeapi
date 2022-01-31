@@ -4,23 +4,27 @@ import com.example.animeapi.domains.dto.DisplayMessage;
 import com.example.animeapi.domains.dto.ListResult;
 import com.example.animeapi.domains.models.Anime;
 import com.example.animeapi.domains.models.projections.ProjectionAnime;
-import com.example.animeapi.domains.models.projections.ProjectionRecommended;
+import com.example.animeapi.domains.models.projections.ProjectionAnimeShort;
 import com.example.animeapi.repositories.AnimeRepository;
 import com.example.animeapi.services.RecommendedService;
+import com.example.animeapi.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
+
 
 @RestController
 @RequestMapping("/animes")
 public class AnimeController {
     @Autowired
     private AnimeRepository animeRepository;
+    @Autowired
+    private UserService userService;
     @Autowired
     private RecommendedService recommendedService;
 
@@ -63,10 +67,28 @@ public class AnimeController {
                 .body(DisplayMessage.message(String.format("No s 'ha trobat l' anime amd id %s", id)));
     }
 
+
+    // RECOMMENDED
+
     @GetMapping("/recommended")
     public ResponseEntity<?> getRecommended(){
         return ResponseEntity.ok().body(ListResult.list(recommendedService.getRecommended()));
     }
 
+    @PostMapping("/recommended")
+    public ResponseEntity<?> addRecommended(@RequestBody Anime anime, Authentication authentication){
+
+        if (userService.ifExist(authentication.getName())){
+          if(recommendedService.validData(anime.animeid)){
+            UUID userid = userService.getUserId(authentication.getName());
+            recommendedService.save(anime.animeid, userid);
+            String animeName = animeRepository.findByAnimeid(anime.animeid, ProjectionAnimeShort.class).getName();
+            return ResponseEntity.ok().body(DisplayMessage.message(String.format("Added '%s' to recommended list", animeName)));
+          }else{
+              return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(DisplayMessage.message("some of the data entered is not correct"));
+          }
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(DisplayMessage.message("You need to be registered to perform this action"));
+    }
 
 }

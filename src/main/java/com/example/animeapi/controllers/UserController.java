@@ -12,6 +12,7 @@ import com.example.animeapi.domains.models.projections.ProjectionUserDetail;
 import com.example.animeapi.repositories.AnimeRepository;
 import com.example.animeapi.repositories.FavoriteRepository;
 import com.example.animeapi.repositories.UserRepository;
+import com.example.animeapi.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +40,9 @@ public class UserController {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    @Autowired
+    private UserService userService;
+
     @GetMapping("/")
     public ResponseEntity<?> getAllUser() {
         List<ProjectionUser> userList = userRepository.findBy();
@@ -57,9 +61,8 @@ public class UserController {
         List<Favorite> favorites = favoriteRepository.findByUserid(userID);
         List<ProjectionFavorite> favoritesAnime = favorites
                                                     .stream()
-                                                    .map(fav -> {
-                                                       return animeRepository.findByAnimeid(fav.animeid, ProjectionFavorite.class);
-                                                    }).collect(Collectors.toList());
+                                                    .map(fav -> animeRepository.findByAnimeid(fav.animeid, ProjectionFavorite.class))
+                                                    .collect(Collectors.toList());
         return ResponseEntity.ok().body(ListResult.list(favoritesAnime));
     }
 
@@ -113,11 +116,9 @@ public class UserController {
 
     @DeleteMapping("/favorite/{id}")
     public ResponseEntity<?> deleteFavorite(@PathVariable UUID id, Authentication authentication) {
-       User user = userRepository.findByUsername(authentication.getName());
-
-        if (user != null) {
+        if (userService.ifExist(authentication.getName())) {
             Favorite favorite = new Favorite();
-            favorite.userid =  user.userid;
+            favorite.userid =  userService.getUserId(authentication.getName());
             favorite.animeid = id;
             favoriteRepository.delete(favorite);
             return ResponseEntity.ok()
