@@ -42,3 +42,13 @@ CREATE TABLE file (
     userid uuid REFERENCES usser(userid) ON DELETE CASCADE,
     animeid uuid REFERENCES anime(animeid) ON DELETE CASCADE,
     PRIMARY KEY (userid, animeid));
+
+
+  CREATE TABLE recommended(
+     userid uuid REFERENCES usser(userid) ON DELETE CASCADE,
+     animeid uuid REFERENCES anime(animeid) ON DELETE CASCADE,
+     genreid uuid REFERENCES genre(genreid) ON DELETE CASCADE,
+     PRIMARY KEY (userid, animeid, genreid));
+
+
+
