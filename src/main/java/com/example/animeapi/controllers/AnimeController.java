@@ -91,4 +91,15 @@ public class AnimeController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(DisplayMessage.message("You need to be registered to perform this action"));
     }
 
+
+    // SEARCH
+    @GetMapping(value = "/search", params = {"name", "genre", "year", "type", "author"})
+    ResponseEntity<?> searchAnime(@RequestParam (required = false)String name, @RequestParam String genre,
+                                  @RequestParam (required = false) int year,  @RequestParam (required = false)String type,
+                                    @RequestParam (required = false) String author){
+
+
+        return null;
+    }
+
 }
