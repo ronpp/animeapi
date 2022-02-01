@@ -29,27 +29,18 @@ public class RecommendedService {
     private RecommendedRepository recommendedRepository;
 
     public List<?> getRecommended(){
-//        return recommendedRepository.findAll().stream()
-//                        .map(recom -> {
-//                            RecommendedResponse rr = new RecommendedResponse();
-//                            rr.genre = genreRepository.findByGenreid(recom.genreid, Genre.class).label;
-//                            Anime anime = animeRepository.findByAnimeid(recom.animeid, Anime.class);
-//                            rr.animes.add(new AnimeSimpleData(anime.name, anime.type));
-//                            return rr;
-//        }).collect(Collectors.toList());
-
         List<Recommended> recommendedList = recommendedRepository.findAll();
-
         Set<String> labels = recommendedList.stream()
                 .map(recommended ->
                             genreRepository.findByGenreid(recommended.genreid, Genre.class).label)
                 .collect(Collectors.toSet());
-        List<RecommendedResponse> recommendedResp = recommendedList.stream()
+        List<RecommendedResponse> recommendedResp = labels.stream()
                 .map(recommended -> {
                     RecommendedResponse rr = new RecommendedResponse();
-                    rr.genre = genreRepository.findByGenreid(recommended.genreid, Genre.class).label;
+                    rr.genre = recommended;
                     return rr;
                 }).collect(Collectors.toList());
+
         for (RecommendedResponse rr : recommendedResp ) {
             for (Recommended recommended: recommendedList ) {
                 String label =  genreRepository.findByGenreid(recommended.genreid, Genre.class).label;
@@ -59,7 +50,6 @@ public class RecommendedService {
                 }
             }
         }
-
         return  recommendedResp;
     }
 

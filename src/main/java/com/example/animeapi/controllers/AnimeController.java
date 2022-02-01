@@ -85,7 +85,7 @@ public class AnimeController {
             String animeName = animeRepository.findByAnimeid(anime.animeid, ProjectionAnimeShort.class).getName();
             return ResponseEntity.ok().body(DisplayMessage.message(String.format("Added '%s' to recommended list", animeName)));
           }else{
-              return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(DisplayMessage.message("some of the data entered is not correct"));
+              return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(DisplayMessage.message("The data entered is not correct"));
           }
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(DisplayMessage.message("You need to be registered to perform this action"));
