@@ -6,6 +6,7 @@ import com.example.animeapi.domains.models.Anime;
 import com.example.animeapi.domains.models.projections.ProjectionAnime;
 import com.example.animeapi.domains.models.projections.ProjectionAnimeShort;
 import com.example.animeapi.repositories.AnimeRepository;
+import com.example.animeapi.services.AnimeService;
 import com.example.animeapi.services.RecommendedService;
 import com.example.animeapi.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ import java.util.UUID;
 public class AnimeController {
     @Autowired
     private AnimeRepository animeRepository;
+
+    @Autowired
+    AnimeService animeService;
     @Autowired
     private UserService userService;
     @Autowired
@@ -47,7 +51,7 @@ public class AnimeController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<?> addAnime(@RequestBody Anime anime) {
+    public ResponseEntity<?> addAnime(@RequestBody Anime anime) { // TODO: Revisar, no requerir entidades
         if (animeRepository.findByname(anime.name) == null)
             return ResponseEntity.ok().body(animeRepository.save(anime));
 
@@ -93,13 +97,16 @@ public class AnimeController {
 
 
     // SEARCH
-    @GetMapping(value = "/search", params = {"name", "genre", "year", "type", "author"})
-    ResponseEntity<?> searchAnime(@RequestParam (required = false)String name, @RequestParam String genre,
-                                  @RequestParam (required = false) int year,  @RequestParam (required = false)String type,
+    @GetMapping("/search")
+   public ResponseEntity<?> searchAnime(@RequestParam (required = false)String name, @RequestParam(required = false) String genre,
+                                  @RequestParam (required = false) Integer year,  @RequestParam (required = false)String type,
                                     @RequestParam (required = false) String author){
 
+        if(name != ""){
+            return ResponseEntity.ok().body(ListResult.list(animeService.getAnimeBy(name)));
+        }
 
-        return null;
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(DisplayMessage.message("Not found any anime with the filter specified"));
     }
 
 }

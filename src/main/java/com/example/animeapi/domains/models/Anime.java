@@ -1,6 +1,7 @@
 package com.example.animeapi.domains.models;
 
 
+import com.example.animeapi.domains.dto.RequestAnimeCreate;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
@@ -33,5 +34,13 @@ public class Anime {
     @JoinTable(name="favorite", joinColumns = @JoinColumn(name = "animeid"), inverseJoinColumns = @JoinColumn(name = "userid"))
     public Set<User> favoriteby;
 
-
+    // TODO: Revisar
+    public static Anime fromRequest(RequestAnimeCreate requestAnimeCreate) {
+        Anime anime = new Anime();
+        anime.name = requestAnimeCreate.name;
+        anime.description = requestAnimeCreate.description;
+        anime.imageurl = requestAnimeCreate.imageurl;
+        anime.type = requestAnimeCreate.type;
+        return anime;
+    }
 }
