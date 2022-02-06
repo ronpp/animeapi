@@ -2,10 +2,11 @@ package com.example.animeapi.controllers;
 
 import com.example.animeapi.domains.dto.DisplayMessage;
 import com.example.animeapi.domains.dto.ListResult;
+import com.example.animeapi.domains.dto.RequestAnimeCreate;
+import com.example.animeapi.domains.dto.RequestRecommended;
 import com.example.animeapi.domains.models.Anime;
 import com.example.animeapi.domains.models.projections.ProjectionAnime;
 import com.example.animeapi.domains.models.projections.ProjectionAnimeShort;
-import com.example.animeapi.repositories.AnimeRepository;
 import com.example.animeapi.services.AnimeService;
 import com.example.animeapi.services.RecommendedService;
 import com.example.animeapi.services.UserService;
@@ -24,8 +25,7 @@ import java.util.function.Predicate;
 @RestController
 @RequestMapping("/animes")
 public class AnimeController {
-    @Autowired
-    private AnimeRepository animeRepository;
+
 
     @Autowired
     AnimeService animeService;
@@ -36,14 +36,14 @@ public class AnimeController {
 
     @GetMapping("/")
     public ResponseEntity<?> getAllAnime() {
-        List<ProjectionAnime> animeList = animeRepository.findBy();
+        List<ProjectionAnime> animeList = animeService.getAnime();
         return ResponseEntity.ok().body(ListResult.list(animeList));
 
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getAnime(@PathVariable UUID id) {
-        ProjectionAnime anime = animeRepository.findByAnimeid(id, ProjectionAnime.class);
+        ProjectionAnime anime = animeService.getAnimeById(id);
         if (anime != null) {
             return ResponseEntity.ok().body(anime);
         }
@@ -53,19 +53,17 @@ public class AnimeController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<?> addAnime(@RequestBody Anime anime) { // TODO: no requerir entidades
-        if (animeRepository.findByname(anime.name) == null)
-            return ResponseEntity.ok().body(animeRepository.save(anime));
-
+    public ResponseEntity<?> addAnime(@RequestBody RequestAnimeCreate anime) {
+        if (animeService.existAnime(anime.name)){
+            return ResponseEntity.ok().body(animeService.saveAnime(anime));
+        }
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(DisplayMessage.message(String.format("Ja existeix un anime amb el nom '%s' ", anime.name)));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteAnime(@PathVariable UUID id) {
-        Anime anime = animeRepository.findById(id).orElse(null);
-        if (anime != null) {
-            animeRepository.deleteById(id);
+        if (animeService.deleteAnime(id)) {
             return ResponseEntity.ok()
                     .body(DisplayMessage.message(String.format("S'ha eliminat l'anime amd id '%s'", id)));
         }
@@ -82,16 +80,16 @@ public class AnimeController {
     }
 
     @PostMapping("/recommended")
-    public ResponseEntity<?> addRecommended(@RequestBody Anime anime, Authentication authentication){ // TODO: no requerir entidades
+    public ResponseEntity<?> addRecommended(@RequestBody RequestRecommended anime, Authentication authentication){
 
         if (userService.ifExist(authentication.getName())){
-          if(recommendedService.validData(anime.animeid)){
+          if(animeService.getAnimeById(anime.animeid) != null){
             UUID userid = userService.getUserId(authentication.getName());
             recommendedService.save(anime.animeid, userid);
-            String animeName = animeRepository.findByAnimeid(anime.animeid, ProjectionAnimeShort.class).getName();
+            String animeName = animeService.getAnimeById(anime.animeid).getName();
             return ResponseEntity.ok().body(DisplayMessage.message(String.format("Added '%s' to recommended list", animeName)));
           }else{
-              return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(DisplayMessage.message("The data entered is not correct"));
+              return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(DisplayMessage.message("The id entered is not valid"));
           }
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(DisplayMessage.message("You need to be registered to perform this action"));
@@ -119,21 +117,21 @@ public class AnimeController {
             return ResponseEntity.ok().body(ListResult.list(animeService.getAnime()));
         }
         if (name != null && !name.equals("") ) {
-           filters.add(animeService.getAnimeByName(name));
+           filters.add(animeService.findAnimeByName(name));
         }
         if (type != null && !type.equals("")) {
-           filters.add(animeService.getAnimeByType(type));
+           filters.add(animeService.findAnimeByType(type));
         }
         if (year != null && !String.valueOf(year).equals("")) {
-           filters.add(animeService.getAnimeByYear(year));
+           filters.add(animeService.findAnimeByYear(year));
         }
         if (genre != null && !genre.equals("")) {
-            filters.add(animeService.getAnimeByGenre(genre));
+            filters.add(animeService.findAnimeByGenre(genre));
         }
         if (author != null && !author.equals("")) {
-           filters.add(animeService.getAnimeByAuthor(author));
+           filters.add(animeService.findAnimeByAuthor(author));
         }
-        return ResponseEntity.ok().body(ListResult.list(animeService.getAnimeBy(filters)));
+        return ResponseEntity.ok().body(ListResult.list(animeService.findAnimeBy(filters)));
 
     }
 

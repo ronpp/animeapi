@@ -23,8 +23,7 @@ public class RecommendedService {
     private GenreRepository genreRepository;
     @Autowired
     private AnimeRepository animeRepository;
-    @Autowired
-    private UserRepository userRepository;
+
     @Autowired
     private RecommendedRepository recommendedRepository;
 
@@ -53,10 +52,6 @@ public class RecommendedService {
         return  recommendedResp;
     }
 
-    public boolean validData(UUID animeID){
-        Anime anime = animeRepository.findById(animeID).orElse(null);
-        return anime != null;
-    }
 
     public void save(UUID animeId,  UUID userId) {
         List<UUID> genres = animeRepository.findByAnimeid(animeId, Anime.class).genres.stream()

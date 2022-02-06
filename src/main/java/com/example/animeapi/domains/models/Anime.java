@@ -34,13 +34,14 @@ public class Anime {
     @JoinTable(name="favorite", joinColumns = @JoinColumn(name = "animeid"), inverseJoinColumns = @JoinColumn(name = "userid"))
     public Set<User> favoriteby;
 
-    // TODO: Revisar
+
     public static Anime fromRequest(RequestAnimeCreate requestAnimeCreate) {
         Anime anime = new Anime();
         anime.name = requestAnimeCreate.name;
         anime.description = requestAnimeCreate.description;
         anime.imageurl = requestAnimeCreate.imageurl;
         anime.type = requestAnimeCreate.type;
+        anime.year_release = requestAnimeCreate.year_release;
         return anime;
     }
 }

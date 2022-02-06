@@ -1,5 +1,7 @@
 package com.example.animeapi.services;
 
+import com.example.animeapi.domains.dto.RequestAnimeCreate;
+import com.example.animeapi.domains.models.Anime;
 import com.example.animeapi.domains.models.projections.ProjectionAnime;
 import com.example.animeapi.domains.models.projections.ProjectionRating;
 import com.example.animeapi.repositories.AnimeRepository;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -22,9 +25,33 @@ public class AnimeService {
     RatingRepository ratingRepository;
 
 
+    // Animes
     public List<ProjectionAnime> getAnime(){
         return animeRepository.findBy();
     }
+
+    public ProjectionAnime getAnimeById(UUID animeID){
+        return animeRepository.findByAnimeid(animeID, ProjectionAnime.class);
+    }
+
+    public Anime saveAnime(RequestAnimeCreate anime){
+        return animeRepository.save(Anime.fromRequest(anime));
+    }
+
+
+    public boolean deleteAnime(UUID id){
+        Anime anime = animeRepository.findById(id).orElse(null);
+        if (anime != null) {
+            animeRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean existAnime(String name) {
+        return animeRepository.findByname(name) == null;
+    }
+
 
 
     // Rating
@@ -34,7 +61,7 @@ public class AnimeService {
 
 
     // Search
-   public List<ProjectionAnime> getAnimeBy(ArrayList<Predicate<ProjectionAnime>>filters){
+   public List<ProjectionAnime> findAnimeBy(ArrayList<Predicate<ProjectionAnime>>filters){
         Predicate<ProjectionAnime> myFilter = null;
         for (Predicate<ProjectionAnime> filter : filters) {
             if(myFilter == null){
@@ -47,30 +74,31 @@ public class AnimeService {
                 .collect(Collectors.toList());
     }
 
-    public Predicate<ProjectionAnime> getAnimeByName(String name){
+    public Predicate<ProjectionAnime> findAnimeByName(String name){
         return anime -> anime.getName().toLowerCase().equals(name);
     }
 
-    public Predicate<ProjectionAnime> getAnimeByType(String type){
+    public Predicate<ProjectionAnime> findAnimeByType(String type){
         return anime -> anime.getType().toLowerCase().equals(type);
     }
 
-    public Predicate<ProjectionAnime> getAnimeByYear(Integer year){
+    public Predicate<ProjectionAnime> findAnimeByYear(Integer year){
         return anime -> anime.getYear_release().equals(year);
     }
 
-    public Predicate<ProjectionAnime> getAnimeByGenre(String genre){
+    public Predicate<ProjectionAnime> findAnimeByGenre(String genre){
         return anime -> anime.getGenres().stream()
                 .map(genres -> genres.getLabel().toLowerCase())
                 .collect(Collectors.toList())
                 .contains(genre);
     }
 
-    public Predicate<ProjectionAnime> getAnimeByAuthor(String author){
+    public Predicate<ProjectionAnime> findAnimeByAuthor(String author){
         return anime -> anime.getAuthors().stream()
                 .map(authors -> authors.getName().toLowerCase())
                 .collect(Collectors.toList())
                 .contains(author);
     }
+
 
 }

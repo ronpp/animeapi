@@ -1,7 +1,7 @@
 package com.example.animeapi.domains.dto;
 
 
-// TODO: Revisar
+
 public class RequestAnimeCreate {
     public String name;
     public String description;
