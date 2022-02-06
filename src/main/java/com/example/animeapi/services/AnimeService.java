@@ -1,7 +1,9 @@
 package com.example.animeapi.services;
 
 import com.example.animeapi.domains.models.projections.ProjectionAnime;
+import com.example.animeapi.domains.models.projections.ProjectionRating;
 import com.example.animeapi.repositories.AnimeRepository;
+import com.example.animeapi.repositories.RatingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +18,22 @@ public class AnimeService {
     @Autowired
     AnimeRepository animeRepository;
 
+    @Autowired
+    RatingRepository ratingRepository;
+
 
     public List<ProjectionAnime> getAnime(){
         return animeRepository.findBy();
     }
 
 
+    // Rating
+    public List<ProjectionRating>getRatingAnime(){
+        return ratingRepository.findBy();
+    }
+
+
+    // Search
    public List<ProjectionAnime> getAnimeBy(ArrayList<Predicate<ProjectionAnime>>filters){
         Predicate<ProjectionAnime> myFilter = null;
         for (Predicate<ProjectionAnime> filter : filters) {

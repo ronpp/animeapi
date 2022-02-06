@@ -3,45 +3,55 @@ INSERT INTO usser (username, password) VALUES ('user', crypt('pass', gen_salt('b
 INSERT INTO usser (username, password) VALUES ('pepe', crypt('pass', gen_salt('bf')));
 
 INSERT INTO anime(name, description, type, year_release, imageurl) VALUES
-    ('Anime I','This is the One Anime','TV',2016,'Anime1.jpg'),
-    ('Anime II','The Two Anime is the next','TV',2018,'Anime2.jpg'),
-    ('Anime III','The Trilogy','TV',2020,'Anime3.jpg'),
-    ('Anime IV','Anime The Movie','Film',2021,'Anime4.jpg');
+    ('Anime 1','This is the One Anime','TV',2016,'Anime1.jpg'),
+    ('Anime 2','The Two Anime is the next','TV',2018,'Anime2.jpg'),
+    ('Anime 3','The Trilogy','TV',2020,'Anime3.jpg'),
+    ('Anime 4','Anime The Movie','Film',2021,'Anime4.jpg'),
+    ('Anime 5','Anime 5 description','Film',2020,'Anime5.jpg');
 
 INSERT INTO author(name, imageurl) VALUES
-    ('Author I','author1.jpg'),
-    ('Author II','author2.jpg'),
-    ('Author III','author3.jpg'),
-    ('Author IV','author4.jpg'),
-    ('Author V','author5.jpg');
+    ('Author 1','author1.jpg'),
+    ('Author 2','author2.jpg'),
+    ('Author 3','author3.jpg'),
+    ('Author 4','author4.jpg'),
+    ('Author 5','author5.jpg');
 
 INSERT INTO genre(label) VALUES
-    ('Genre I'),
-    ('Genre II'),
-    ('Genre III');
+    ('Genre 1'),
+    ('Genre 2'),
+    ('Genre 3');
 
 INSERT INTO anime_author VALUES
-    ((SELECT animeid FROM anime WHERE name='Anime I'),(SELECT authorid FROM author WHERE name='Author I')),
-    ((SELECT animeid FROM anime WHERE name='Anime I'),(SELECT authorid FROM author WHERE name='Author II')),
-    ((SELECT animeid FROM anime WHERE name='Anime II'),(SELECT authorid FROM author WHERE name='Author III')),
-    ((SELECT animeid FROM anime WHERE name='Anime II'),(SELECT authorid FROM author WHERE name='Author IV')),
-    ((SELECT animeid FROM anime WHERE name='Anime III'),(SELECT authorid FROM author WHERE name='Author IV')),
-    ((SELECT animeid FROM anime WHERE name='Anime III'),(SELECT authorid FROM author WHERE name='Author V')),
-    ((SELECT animeid FROM anime WHERE name='Anime IV'),(SELECT authorid FROM author WHERE name='Author I')),
-    ((SELECT animeid FROM anime WHERE name='Anime IV'),(SELECT authorid FROM author WHERE name='Author IV'));
+    ((SELECT animeid FROM anime WHERE name='Anime 1'),(SELECT authorid FROM author WHERE name='Author 1')),
+    ((SELECT animeid FROM anime WHERE name='Anime 1'),(SELECT authorid FROM author WHERE name='Author 2')),
+    ((SELECT animeid FROM anime WHERE name='Anime 2'),(SELECT authorid FROM author WHERE name='Author 3')),
+    ((SELECT animeid FROM anime WHERE name='Anime 2'),(SELECT authorid FROM author WHERE name='Author 4')),
+    ((SELECT animeid FROM anime WHERE name='Anime 3'),(SELECT authorid FROM author WHERE name='Author 4')),
+    ((SELECT animeid FROM anime WHERE name='Anime 3'),(SELECT authorid FROM author WHERE name='Author 5')),
+    ((SELECT animeid FROM anime WHERE name='Anime 4'),(SELECT authorid FROM author WHERE name='Author 1')),
+    ((SELECT animeid FROM anime WHERE name='Anime 4'),(SELECT authorid FROM author WHERE name='Author 4')),
+    ((SELECT animeid FROM anime WHERE name='Anime 5'),(SELECT authorid FROM author WHERE name='Author 2'));
 
 INSERT INTO anime_genre VALUES
-    ((SELECT animeid FROM anime WHERE name='Anime I'),(SELECT genreid FROM genre WHERE label='Genre I')),
-    ((SELECT animeid FROM anime WHERE name='Anime I'),(SELECT genreid FROM genre WHERE label='Genre II')),
-    ((SELECT animeid FROM anime WHERE name='Anime II'),(SELECT genreid FROM genre WHERE label='Genre I')),
-    ((SELECT animeid FROM anime WHERE name='Anime III'),(SELECT genreid FROM genre WHERE label='Genre I')),
-    ((SELECT animeid FROM anime WHERE name='Anime III'),(SELECT genreid FROM genre WHERE label='Genre II')),
-    ((SELECT animeid FROM anime WHERE name='Anime III'),(SELECT genreid FROM genre WHERE label='Genre III'));
+    ((SELECT animeid FROM anime WHERE name='Anime 1'),(SELECT genreid FROM genre WHERE label='Genre 1')),
+    ((SELECT animeid FROM anime WHERE name='Anime 1'),(SELECT genreid FROM genre WHERE label='Genre 2')),
+    ((SELECT animeid FROM anime WHERE name='Anime 2'),(SELECT genreid FROM genre WHERE label='Genre 1')),
+    ((SELECT animeid FROM anime WHERE name='Anime 3'),(SELECT genreid FROM genre WHERE label='Genre 1')),
+    ((SELECT animeid FROM anime WHERE name='Anime 3'),(SELECT genreid FROM genre WHERE label='Genre 2')),
+    ((SELECT animeid FROM anime WHERE name='Anime 3'),(SELECT genreid FROM genre WHERE label='Genre 3')),
+    ((SELECT animeid FROM anime WHERE name='Anime 5'),(SELECT genreid FROM genre WHERE label='Genre 3'));
 
 
 INSERT INTO favorite VALUES
-   ((SELECT userid FROM usser WHERE username = 'user'),(SELECT animeid FROM anime WHERE name = 'Anime IV')),
-   ((SELECT userid FROM usser WHERE username = 'user'),(SELECT animeid FROM anime WHERE name = 'Anime I')),
-   ((SELECT userid FROM usser WHERE username = 'pepe'),(SELECT animeid FROM anime WHERE name = 'Anime IV')),
-   ((SELECT userid FROM usser WHERE username = 'pepe'),(SELECT animeid FROM anime WHERE name = 'Anime III')),
-   ((SELECT userid FROM usser WHERE username = 'pepe'),(SELECT animeid FROM anime WHERE name = 'Anime II'));
+   ((SELECT userid FROM usser WHERE username = 'user'),(SELECT animeid FROM anime WHERE name = 'Anime 1')),
+   ((SELECT userid FROM usser WHERE username = 'user'),(SELECT animeid FROM anime WHERE name = 'Anime 4')),
+   ((SELECT userid FROM usser WHERE username = 'pepe'),(SELECT animeid FROM anime WHERE name = 'Anime 2')),
+   ((SELECT userid FROM usser WHERE username = 'pepe'),(SELECT animeid FROM anime WHERE name = 'Anime 3')),
+   ((SELECT userid FROM usser WHERE username = 'pepe'),(SELECT animeid FROM anime WHERE name = 'Anime 4'));
+
+INSERT INTO rating VALUES
+   ((SELECT username FROM usser WHERE username = 'pepe'),(SELECT name FROM anime WHERE name = 'Anime 1'), 4.5),
+   ((SELECT username FROM usser WHERE username = 'pepe'),(SELECT name FROM anime WHERE name = 'Anime 4'), 3),
+   ((SELECT username FROM usser WHERE username = 'user'),(SELECT name FROM anime WHERE name = 'Anime 2'), 4),
+   ((SELECT username FROM usser WHERE username = 'user'),(SELECT name FROM anime WHERE name = 'Anime 3'), 5),
+   ((SELECT username FROM usser WHERE username = 'user'),(SELECT name FROM anime WHERE name = 'Anime 4'), 4);

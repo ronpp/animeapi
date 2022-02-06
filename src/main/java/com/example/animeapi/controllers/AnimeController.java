@@ -53,7 +53,7 @@ public class AnimeController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<?> addAnime(@RequestBody Anime anime) { // TODO: Revisar, no requerir entidades
+    public ResponseEntity<?> addAnime(@RequestBody Anime anime) { // TODO: no requerir entidades
         if (animeRepository.findByname(anime.name) == null)
             return ResponseEntity.ok().body(animeRepository.save(anime));
 
@@ -82,7 +82,7 @@ public class AnimeController {
     }
 
     @PostMapping("/recommended")
-    public ResponseEntity<?> addRecommended(@RequestBody Anime anime, Authentication authentication){
+    public ResponseEntity<?> addRecommended(@RequestBody Anime anime, Authentication authentication){ // TODO: no requerir entidades
 
         if (userService.ifExist(authentication.getName())){
           if(recommendedService.validData(anime.animeid)){
@@ -95,6 +95,14 @@ public class AnimeController {
           }
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(DisplayMessage.message("You need to be registered to perform this action"));
+    }
+
+
+    // Rating
+
+    @GetMapping("/rating")
+    public ResponseEntity<?> getAnimeRating(){
+        return ResponseEntity.ok().body(ListResult.list(animeService.getRatingAnime()));
     }
 
 
