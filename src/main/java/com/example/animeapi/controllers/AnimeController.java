@@ -102,8 +102,23 @@ public class AnimeController {
                                   @RequestParam (required = false) Integer year,  @RequestParam (required = false)String type,
                                     @RequestParam (required = false) String author){
 
-        if(name != ""){
-            return ResponseEntity.ok().body(ListResult.list(animeService.getAnimeBy(name)));
+        if(name == null && genre == null && year == null && type == null && author == null){
+            return ResponseEntity.ok().body(ListResult.list(animeService.getAnime()));
+        }
+        if (name != null) {
+            return ResponseEntity.ok().body(ListResult.list(animeService.getAnimeBy(animeService.getAnimeByName(name))));
+        }
+        if (type != null) {
+            return ResponseEntity.ok().body(ListResult.list(animeService.getAnimeBy(animeService.getAnimeByType(type))));
+        }
+        if (year != null) {
+            return ResponseEntity.ok().body(ListResult.list(animeService.getAnimeBy(animeService.getAnimeByYear(year))));
+        }
+        if (genre != null) {
+            return ResponseEntity.ok().body(ListResult.list(animeService.getAnimeBy(animeService.getAnimeByGenre(genre))));
+        }
+        if (author != null) {
+            return ResponseEntity.ok().body(ListResult.list(animeService.getAnimeBy(animeService.getAnimeByAuthor(author))));
         }
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(DisplayMessage.message("Not found any anime with the filter specified"));
