@@ -15,8 +15,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 
 @RestController
@@ -102,26 +104,29 @@ public class AnimeController {
                                   @RequestParam (required = false) Integer year,  @RequestParam (required = false)String type,
                                     @RequestParam (required = false) String author){
 
+
+       ArrayList< Predicate<ProjectionAnime>> filters = new ArrayList<>();
+
         if(name == null && genre == null && year == null && type == null && author == null){
             return ResponseEntity.ok().body(ListResult.list(animeService.getAnime()));
         }
-        if (name != null) {
-            return ResponseEntity.ok().body(ListResult.list(animeService.getAnimeBy(animeService.getAnimeByName(name))));
+        if (name != null && !name.equals("") ) {
+           filters.add(animeService.getAnimeByName(name));
         }
-        if (type != null) {
-            return ResponseEntity.ok().body(ListResult.list(animeService.getAnimeBy(animeService.getAnimeByType(type))));
+        if (type != null && !type.equals("")) {
+           filters.add(animeService.getAnimeByType(type));
         }
-        if (year != null) {
-            return ResponseEntity.ok().body(ListResult.list(animeService.getAnimeBy(animeService.getAnimeByYear(year))));
+        if (year != null && !String.valueOf(year).equals("")) {
+           filters.add(animeService.getAnimeByYear(year));
         }
-        if (genre != null) {
-            return ResponseEntity.ok().body(ListResult.list(animeService.getAnimeBy(animeService.getAnimeByGenre(genre))));
+        if (genre != null && !genre.equals("")) {
+            filters.add(animeService.getAnimeByGenre(genre));
         }
-        if (author != null) {
-            return ResponseEntity.ok().body(ListResult.list(animeService.getAnimeBy(animeService.getAnimeByAuthor(author))));
+        if (author != null && !author.equals("")) {
+           filters.add(animeService.getAnimeByAuthor(author));
         }
+        return ResponseEntity.ok().body(ListResult.list(animeService.getAnimeBy(filters)));
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(DisplayMessage.message("Not found any anime with the filter specified"));
     }
 
 }
