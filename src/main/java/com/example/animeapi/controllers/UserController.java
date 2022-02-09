@@ -1,18 +1,12 @@
 package com.example.animeapi.controllers;
 
 import com.example.animeapi.domains.dto.*;
-import com.example.animeapi.domains.models.Favorite;
-import com.example.animeapi.domains.models.User;
-import com.example.animeapi.repositories.AnimeRepository;
-import com.example.animeapi.repositories.FavoriteRepository;
-import com.example.animeapi.repositories.UserRepository;
 import com.example.animeapi.services.AnimeService;
 import com.example.animeapi.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 

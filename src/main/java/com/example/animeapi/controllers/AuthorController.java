@@ -3,16 +3,13 @@ package com.example.animeapi.controllers;
 
 import com.example.animeapi.domains.dto.DisplayMessage;
 import com.example.animeapi.domains.dto.ListResult;
-import com.example.animeapi.domains.models.projections.ProjectionAuthor;
-import com.example.animeapi.domains.models.projections.ProjectionAuthorDetails;
-import com.example.animeapi.repositories.AuthorRepository;
 import com.example.animeapi.services.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+
 import java.util.UUID;
 
 
