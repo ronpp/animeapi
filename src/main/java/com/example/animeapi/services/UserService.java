@@ -64,6 +64,10 @@ public class UserService {
         userRepository.deleteById(userId);
     }
 
+    public void deleteAllUser(){
+        userRepository.deleteAll();
+    }
+
 
 
 
@@ -84,4 +88,10 @@ public class UserService {
         return favorite;
     }
 
+     public void deleteFavorite(UUID animeId, String username){
+         Favorite favorite = new Favorite();
+         favorite.userid = getUserId(username);
+         favorite.animeid = animeId;
+         favoriteRepository.delete(favorite);
+     }
 }

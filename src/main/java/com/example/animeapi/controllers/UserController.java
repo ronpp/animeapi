@@ -29,14 +29,6 @@ public class UserController {
     private AnimeService animeService;
 
 
-    @Autowired
-    private AnimeRepository animeRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private FavoriteRepository favoriteRepository;
-
-
 
     @GetMapping("/")
     public ResponseEntity<?> getAllUser() {
@@ -74,7 +66,7 @@ public class UserController {
                 .body(DisplayMessage.message(String.format("No s 'ha trobat l' anime amd id '%s'", favorite.animeid)));
     }
 
-    @DeleteMapping("/{id}")  // TODO:
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable UUID id) {
         if (userService.getUserById(id) != null) {
             userService.deleteUser(id);
@@ -85,22 +77,19 @@ public class UserController {
                 .body(DisplayMessage.message(String.format("No s'ha trobat l'usuari amd id '%s'", id)));
     }
 
-    @DeleteMapping("/") // TODO:
+    @DeleteMapping("/")
     public ResponseEntity<?> deleteAllUser() {
-        userRepository.deleteAll();
+        userService.deleteAllUser();
         return ResponseEntity.ok().build();
     }
 
 
     // FAVORITES
 
-    @DeleteMapping("/favorite/{id}")  // TODO:
+    @DeleteMapping("/favorite/{id}")
     public ResponseEntity<?> deleteFavorite(@PathVariable UUID id, Authentication authentication) {
-        if (userService.ifExist(authentication.getName())) {
-            Favorite favorite = new Favorite();
-            favorite.userid =  userService.getUserId(authentication.getName());
-            favorite.animeid = id;
-            favoriteRepository.delete(favorite);
+        if (animeService.getAnimeById(id) != null) {
+            userService.deleteFavorite(id, authentication.getName());
             return ResponseEntity.ok()
                     .body(DisplayMessage.message(String.format("S'ha eliminat dels favorits l'anime amd id '%s'", id)));
         }
