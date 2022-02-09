@@ -6,6 +6,7 @@ import com.example.animeapi.domains.dto.ListResult;
 import com.example.animeapi.domains.models.projections.ProjectionAuthor;
 import com.example.animeapi.domains.models.projections.ProjectionAuthorDetails;
 import com.example.animeapi.repositories.AuthorRepository;
+import com.example.animeapi.services.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,20 +20,18 @@ import java.util.UUID;
 @RequestMapping("/authors")
 public class AuthorController {
     @Autowired
-    private AuthorRepository AuthorRepository;
+    private AuthorService authorService;
 
     @GetMapping("/")
     public ResponseEntity<?> getAllAuthor() {
-        List<ProjectionAuthor> authorList = AuthorRepository.findBy();
-        return ResponseEntity.ok().body(ListResult.list(authorList));
+        return ResponseEntity.ok().body(ListResult.list(authorService.getAllAuthor()));
 
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getAuthor(@PathVariable UUID id) {
-        ProjectionAuthorDetails author = AuthorRepository.findByAuthorid(id, ProjectionAuthorDetails.class);
-        if (author != null) {
-            return ResponseEntity.ok().body(author);
+        if (authorService.ifExist(id)) {
+            return ResponseEntity.ok().body(authorService.getAuthor(id));
         }
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
