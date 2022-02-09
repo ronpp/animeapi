@@ -4,8 +4,8 @@ import com.example.animeapi.domains.dto.DisplayMessage;
 import com.example.animeapi.domains.dto.FileResult;
 import com.example.animeapi.domains.dto.ListResult;
 import com.example.animeapi.domains.models.File;
-import com.example.animeapi.domains.models.projections.ProjectionFile;
 import com.example.animeapi.repositories.FileRepository;
+import com.example.animeapi.services.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+
 import java.util.UUID;
 
 @RestController
@@ -21,13 +21,13 @@ import java.util.UUID;
 public class FileController {
 
     @Autowired
+    private FileService fileService;
+    @Autowired
     private FileRepository fileRepository;
 
     @GetMapping("/")
     public ResponseEntity<?> getAllFile() {
-        List<ProjectionFile> fileList = fileRepository.findBy();
-            return ResponseEntity.ok().body(ListResult.list(fileList));
-
+            return ResponseEntity.ok().body(ListResult.list(fileService.getAllFile()));
     }
 
     @GetMapping("/{id}")
