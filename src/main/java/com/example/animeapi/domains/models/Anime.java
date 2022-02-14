@@ -18,6 +18,7 @@ public class Anime {
     public String description;
     public String type;
     public int year_release;
+    public int episodes;
     public String imageurl;
 
     @ManyToMany

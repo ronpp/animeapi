@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS anime (
     description text,
     type text,
     year_release smallint,
+    episodes smallint,
     imageurl text);
 
 CREATE TABLE author (
@@ -53,7 +54,7 @@ CREATE TABLE file (
   CREATE TABLE rating(
       username varchar(24) REFERENCES usser(username) ON DELETE CASCADE,
       anime text REFERENCES anime(name) ON DELETE CASCADE,
-      score numeric DEFAULT 0 CHECK (score <= 5),
+      score numeric DEFAULT 0 CHECK (score <= 10),
       PRIMARY KEY (username, anime));
 
 
