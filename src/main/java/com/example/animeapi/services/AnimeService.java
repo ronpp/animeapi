@@ -1,9 +1,10 @@
 package com.example.animeapi.services;
 
 import com.example.animeapi.domains.dto.RequestAnimeCreate;
+import com.example.animeapi.domains.dto.ResponseRating;
 import com.example.animeapi.domains.models.Anime;
+import com.example.animeapi.domains.models.Rating;
 import com.example.animeapi.domains.models.projections.ProjectionAnime;
-import com.example.animeapi.domains.models.projections.ProjectionRating;
 import com.example.animeapi.repositories.AnimeRepository;
 import com.example.animeapi.repositories.RatingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -55,10 +57,14 @@ public class AnimeService {
 
 
     // Rating
-    public List<ProjectionRating>getRatingAnime(){
-        return ratingRepository.findBy();
-    }
+    public List<ResponseRating>getRatingAnime(){
+        return ratingRepository.findBy().stream()
+                .collect(Collectors.groupingBy(Rating::getAnime, Collectors.averagingDouble(Rating::getScore)))
+                .entrySet().stream()
+                .map(entry -> new ResponseRating(entry.getKey(),Math.round(entry.getValue()*100.0)/100.0))
+                .collect(Collectors.toList());
 
+    }
 
     // Search
    public List<ProjectionAnime> findAnimeBy(ArrayList<Predicate<ProjectionAnime>>filters){

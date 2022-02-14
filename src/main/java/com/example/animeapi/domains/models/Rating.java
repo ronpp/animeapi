@@ -20,6 +20,11 @@ public class Rating {
     public String anime;
     public double score;
 
+    public String getAnime() {
+        return anime;
+    }
 
-
+    public double getScore() {
+        return score;
+    }
 }
