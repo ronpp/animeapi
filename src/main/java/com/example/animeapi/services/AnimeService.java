@@ -1,6 +1,7 @@
 package com.example.animeapi.services;
 
 import com.example.animeapi.domains.dto.RequestAnimeCreate;
+import com.example.animeapi.domains.dto.RequetRating;
 import com.example.animeapi.domains.dto.ResponseRating;
 import com.example.animeapi.domains.models.Anime;
 import com.example.animeapi.domains.models.Rating;
@@ -66,6 +67,14 @@ public class AnimeService {
 
     }
 
+    public void AddRatingAnime( RequetRating requetRating, String username) {
+        Rating rating = new Rating();
+        rating.anime = requetRating.anime;
+        rating.score = requetRating.score;
+        rating.username = username;
+        ratingRepository.save(rating);
+    }
+
     // Search
    public List<ProjectionAnime> findAnimeBy(ArrayList<Predicate<ProjectionAnime>>filters){
         Predicate<ProjectionAnime> myFilter = null;
@@ -105,6 +114,5 @@ public class AnimeService {
                 .collect(Collectors.toList())
                 .contains(author.toLowerCase());
     }
-
 
 }
