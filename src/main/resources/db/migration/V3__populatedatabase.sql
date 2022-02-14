@@ -150,3 +150,18 @@ INSERT INTO rating VALUES
    ((SELECT username FROM usser WHERE username = 'dani'),(SELECT name FROM anime WHERE name = 'Dragon Ball Z'), 7),
    ((SELECT username FROM usser WHERE username = 'dani'),(SELECT name FROM anime WHERE name = 'One Piece'), 8.4),
    ((SELECT username FROM usser WHERE username = 'dani'),(SELECT name FROM anime WHERE name = 'Kimetsu no Yaiba Mugen Ressha-hen(Demon Slayer: Infinity Train)'), 10);
+
+-- RECOMMENDED --
+INSERT INTO recommended VALUES
+   ((SELECT userid FROM usser WHERE username = 'ronny'),(SELECT animeid FROM anime WHERE name = 'Bleach'),(SELECT genreid FROM genre WHERE label='Action')),
+   ((SELECT userid FROM usser WHERE username = 'ronny'),(SELECT animeid FROM anime WHERE name = 'Bleach'),(SELECT genreid FROM genre WHERE label='Adventure')),
+   ((SELECT userid FROM usser WHERE username = 'ronny'),(SELECT animeid FROM anime WHERE name = 'Bleach'),(SELECT genreid FROM genre WHERE label='Supernatural')),
+   ((SELECT userid FROM usser WHERE username = 'ronny'),(SELECT animeid FROM anime WHERE name = 'Jujutsu Kaisen'),(SELECT genreid FROM genre WHERE label='Supernatural')),
+   ((SELECT userid FROM usser WHERE username = 'ronny'),(SELECT animeid FROM anime WHERE name = 'Jujutsu Kaisen'),(SELECT genreid FROM genre WHERE label='Adventure')),
+   ((SELECT userid FROM usser WHERE username = 'ronny'),(SELECT animeid FROM anime WHERE name = 'Jujutsu Kaisen'),(SELECT genreid FROM genre WHERE label='Dark Fantasy')),
+   ((SELECT userid FROM usser WHERE username = 'ronny'),(SELECT animeid FROM anime WHERE name = 'Shingeki no Kyojin(Attack on Titan)'),(SELECT genreid FROM genre WHERE label='Dark Fantasy')),
+   ((SELECT userid FROM usser WHERE username = 'andreu'),(SELECT animeid FROM anime WHERE name = 'Shingeki no Kyojin(Attack on Titan)'),(SELECT genreid FROM genre WHERE label='Action')),
+   ((SELECT userid FROM usser WHERE username = 'andreu'),(SELECT animeid FROM anime WHERE name = 'Shingeki no Kyojin(Attack on Titan)'),(SELECT genreid FROM genre WHERE label='Post-apocalyptic')),
+   ((SELECT userid FROM usser WHERE username = 'dani'),(SELECT animeid FROM anime WHERE name = 'Kimetsu no Yaiba Mugen Ressha-hen(Demon Slayer: Infinity Train)'),(SELECT genreid FROM genre WHERE label='Action')),
+   ((SELECT userid FROM usser WHERE username = 'dani'),(SELECT animeid FROM anime WHERE name = 'Kimetsu no Yaiba Mugen Ressha-hen(Demon Slayer: Infinity Train)'),(SELECT genreid FROM genre WHERE label='Adventure')),
+   ((SELECT userid FROM usser WHERE username = 'dani'),(SELECT animeid FROM anime WHERE name = 'Kimetsu no Yaiba Mugen Ressha-hen(Demon Slayer: Infinity Train)'),(SELECT genreid FROM genre WHERE label='Dark Fantasy'));

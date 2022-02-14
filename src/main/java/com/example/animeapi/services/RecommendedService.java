@@ -57,8 +57,8 @@ public class RecommendedService {
                        .map(genre -> genre.genreid)
                        .collect(Collectors.toList());
 
-        Recommended recommended = new Recommended();
         genres.forEach(genre -> {
+                    Recommended recommended = new Recommended();
                     recommended.genreid = genre;
                     recommended.userid = userId;
                     recommended.animeid = animeId;

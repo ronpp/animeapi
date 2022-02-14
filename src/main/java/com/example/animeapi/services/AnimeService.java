@@ -81,7 +81,7 @@ public class AnimeService {
     }
 
     public Predicate<ProjectionAnime> findAnimeByName(String name){
-        return anime -> anime.getName().toLowerCase().equals(name);
+        return anime -> anime.getName().toLowerCase().equals(name) || anime.getName().toLowerCase().contains(name) ;
     }
 
     public Predicate<ProjectionAnime> findAnimeByType(String type){
@@ -96,14 +96,14 @@ public class AnimeService {
         return anime -> anime.getGenres().stream()
                 .map(genres -> genres.getLabel().toLowerCase())
                 .collect(Collectors.toList())
-                .contains(genre);
+                .contains(genre.toLowerCase());
     }
 
     public Predicate<ProjectionAnime> findAnimeByAuthor(String author){
         return anime -> anime.getAuthors().stream()
                 .map(authors -> authors.getName().toLowerCase())
                 .collect(Collectors.toList())
-                .contains(author);
+                .contains(author.toLowerCase());
     }
 
 
