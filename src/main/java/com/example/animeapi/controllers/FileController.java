@@ -22,8 +22,8 @@ public class FileController {
 
     @Autowired
     private FileService fileService;
-    @Autowired
-    private FileRepository fileRepository;
+
+
 
     @GetMapping("/")
     public ResponseEntity<?> getAllFile() {
@@ -32,11 +32,12 @@ public class FileController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getFile(@PathVariable UUID id) {
-        File file = fileRepository.findById(id).orElse(null);
-        if (file != null)
+        if (fileService.exist(id)){
+            File file = fileService.getFile(id);
             return ResponseEntity.ok().contentType(MediaType.valueOf(file.contenttype))
                     .contentLength(file.data.length)
                     .body(file.data);
+        }
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(DisplayMessage.message(String.format("No s'ha trobat l'arxiu amd id '%s'", id)));
@@ -44,23 +45,18 @@ public class FileController {
 
     @PostMapping("/")
     public ResponseEntity<?> addFile(@RequestParam("file") MultipartFile uploadedFile) {
-        try {
-            File file = new File();
-            file.contenttype = uploadedFile.getContentType();
-            file.data = uploadedFile.getBytes();
-            fileRepository.save(file);
-            return ResponseEntity.ok().body(FileResult.file(file));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.internalServerError().build();
+
+        if (fileService.addFile(uploadedFile) != null){
+            return ResponseEntity.ok().body(FileResult.file(fileService.addFile(uploadedFile)));
         }
+        return ResponseEntity.internalServerError().build();
+
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable UUID id) {
-        File file = fileRepository.findById(id).orElse(null);
-        if (file != null) {
-            fileRepository.deleteById(id);
+    public ResponseEntity<?> deleteFile(@PathVariable UUID id) {
+        if (fileService.exist(id)) {
+            fileService.deleteFile(id);
             return ResponseEntity.ok()
                     .body(DisplayMessage.message(String.format("S'ha eliminat l'arxiu amd id '%s'", id)));
         }
@@ -69,8 +65,8 @@ public class FileController {
     }
 
     @DeleteMapping("/")
-    public ResponseEntity<?> deleteAllUser() {
-        fileRepository.deleteAll();
+    public ResponseEntity<?> deleteAllFile() {
+        fileService.deleteAllFile();
         return ResponseEntity.ok().build();
     }
 }
