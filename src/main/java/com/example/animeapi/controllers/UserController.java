@@ -29,15 +29,10 @@ public class UserController {
         return ResponseEntity.ok().body(ListResult.list(userService.getAllUsers()));
     }
 
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getUser(@PathVariable UUID id) {
         return ResponseEntity.ok().body(userService.getUserById(id));
-    }
-
-
-    @GetMapping("/favorites")
-    public ResponseEntity<?>getFavorite(Authentication authentication){
-        return ResponseEntity.ok().body(ListResult.list(userService.getUserFavorites(authentication.getName())));
     }
 
 
@@ -49,15 +44,6 @@ public class UserController {
         }
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(DisplayMessage.message(String.format("Ja existeix un usuari amb el nom '%s'", newUser.username)));
-    }
-
-    @PostMapping("/favorite")
-    public ResponseEntity<?> addFavorite(@RequestBody RequestFavorite favorite, Authentication authentication) {
-        if (animeService.getAnimeById(favorite.animeid) != null){
-            return ResponseEntity.ok().body(userService.addFavoriteToUser(favorite, authentication.getName()));
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(DisplayMessage.message(String.format("No s 'ha trobat l' anime amd id '%s'", favorite.animeid)));
     }
 
     @DeleteMapping("/{id}")
@@ -77,8 +63,31 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    // Login
+    @GetMapping("/login")
+    public ResponseEntity<?> login() {
+        return ResponseEntity.ok().build();
+    }
+
+
 
     // FAVORITES
+
+    @GetMapping("/favorites")
+    public ResponseEntity<?>getFavorite(Authentication authentication){
+        return ResponseEntity.ok().body(ListResult.list(userService.getUserFavorites(authentication.getName())));
+    }
+
+
+    @PostMapping("/favorite")
+    public ResponseEntity<?> addFavorite(@RequestBody RequestFavorite favorite, Authentication authentication) {
+        if (animeService.getAnimeById(favorite.animeid) != null){
+            return ResponseEntity.ok().body(userService.addFavoriteToUser(favorite, authentication.getName()));
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(DisplayMessage.message(String.format("No s 'ha trobat l' anime amd id '%s'", favorite.animeid)));
+    }
+
 
     @DeleteMapping("/favorite/{id}")
     public ResponseEntity<?> deleteFavorite(@PathVariable UUID id, Authentication authentication) {
@@ -91,5 +100,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(DisplayMessage.message(String.format("No s 'ha trobat l'id '%s'", id)));
     }
+
+
 
 }
