@@ -79,7 +79,7 @@ public class UserController {
     }
 
 
-    @PostMapping("/favorite")
+    @PostMapping("/favorites")
     public ResponseEntity<?> addFavorite(@RequestBody RequestFavorite favorite, Authentication authentication) {
         if (animeService.getAnimeById(favorite.animeid) != null){
             return ResponseEntity.ok().body(userService.addFavoriteToUser(favorite, authentication.getName()));
@@ -89,7 +89,7 @@ public class UserController {
     }
 
 
-    @DeleteMapping("/favorite/{id}")
+    @DeleteMapping("/favorites/{id}")
     public ResponseEntity<?> deleteFavorite(@PathVariable UUID id, Authentication authentication) {
         if (animeService.getAnimeById(id) != null) {
             userService.deleteFavorite(id, authentication.getName());
